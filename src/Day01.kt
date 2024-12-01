@@ -23,7 +23,7 @@ fun main() {
 
 }
 
-private fun dayOnePartOne(lines: List<String>): Int {
+fun dayOnePartOne(lines: List<String>): Int {
     val (left, right) = lines.map { line ->
         val (first, second) = line.split("   ")
         first.toInt() to second.toInt()
@@ -37,7 +37,7 @@ private fun dayOnePartOne(lines: List<String>): Int {
     return result
 }
 
-private fun dayOnePartTwo(lines: List<String>): Int {
+fun dayOnePartTwo(lines: List<String>): Int {
     val (left, right) = lines.map { line ->
         val (first, second) = line.split("   ")
         first.toInt() to second.toInt()
