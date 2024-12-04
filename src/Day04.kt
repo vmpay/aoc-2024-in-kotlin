@@ -4,7 +4,7 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        return 9
+        return day04Part2(input)
     }
 
     val inputTest = readInput("Day04_test")
@@ -76,4 +76,24 @@ fun countThereAndBack(input: List<String>): Int {
         input.fold("") { acc, i -> "$acc|$i" }
     ).count()
     return there + back
+}
+
+fun day04Part2(input: List<String>): Int {
+    var count = 0
+    for (i in 1 until input[0].length - 1) {
+        for (j in 1 until input.size - 1) {
+            if (input[i][j] == 'A') {
+                if (checkA(input, i, j)) {
+                    count++
+                }
+            }
+        }
+    }
+    return count
+}
+
+fun checkA(input: List<String>, i: Int, j: Int): Boolean {
+    val diagonal1 = "${input[i - 1][j - 1]}${input[i][j]}${input[i + 1][j + 1]}"
+    val diagonal2 = "${input[i - 1][j + 1]}${input[i][j]}${input[i + 1][j - 1]}"
+    return (diagonal1 == "MAS" || diagonal1 == "SAM") && (diagonal2 == "MAS" || diagonal2 == "SAM")
 }
