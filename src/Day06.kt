@@ -4,11 +4,12 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        return 0
+        return daySixPartTwo(input)
     }
 
     val testInput = readInput("Day06_test")
     check(part1(testInput) == 41)
+    check(part2(testInput) == 6)
 
     val input = readInput("Day06")
     val p1 = part1(input).also { it.println() }
@@ -20,6 +21,7 @@ class Guard(
 ) {
     private var position: Pair<Int, Int> = 0 to 0
     private var direction: Direction = Direction.S
+    private val steps: MutableList<Pair<Direction, Pair<Int, Int>>> = mutableListOf()
 
     init {
         var done = false
@@ -43,12 +45,11 @@ class Guard(
         val sb = StringBuilder(input[position.second])
         sb.setCharAt(position.first, 'X')
         input[position.second] = sb.toString()
-        println("init position $position direction $direction")
+        steps.add(direction to position)
     }
 
     fun turn() {
         direction = Direction.entries[(direction.ordinal + 1) % 4]
-        println("turning to $direction pos = $position")
     }
 
     fun move() {
@@ -61,7 +62,7 @@ class Guard(
         val sb = StringBuilder(input[position.second])
         sb.setCharAt(position.first, 'X')
         input[position.second] = sb.toString()
-        println("moved to pos $position dir $direction")
+        steps.add(direction to position)
     }
 
     fun canMove(): Boolean {
@@ -81,6 +82,10 @@ class Guard(
             Direction.W -> position.first == 0
         }
     }
+
+    fun isStuck(): Boolean {
+        return steps.count { it == direction to position } > 1
+    }
 }
 
 enum class Direction {
@@ -97,10 +102,38 @@ private fun daySixPartOne(input: List<String>): Int {
         } else {
             guard.turn()
         }
-
     }
 
     return list.fold(0) { acc, element ->
         acc + element.count { it == 'X' }
     }
+}
+
+private fun daySixPartTwo(input: List<String>): Int {
+    var result = 0
+    for (y in input.indices) {
+        for (x in 0 until input[y].length) {
+            if (input[y][x] == '.') {
+                val list = input.toMutableList()
+                val sb = StringBuilder(input[y])
+                sb.setCharAt(x, '#')
+                list[y] = sb.toString()
+
+                val guard = Guard(list)
+
+                while (!guard.canFinish() && !guard.isStuck()) {
+                    if (guard.canMove()) {
+                        guard.move()
+                    } else {
+                        guard.turn()
+                    }
+                }
+
+                if (guard.isStuck()) {
+                    result++
+                }
+            }
+        }
+    }
+    return result
 }
